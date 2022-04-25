@@ -1,7 +1,11 @@
 # Checking if the Windows version is compatible with WinGet
-## Checking if Windows version is Windows 10 or higher (Windows 11 use MajorNumber "10" also)
-IF (($PSVersionTable.BuildVersion.Major) -ge "10") {
+## Checking if Windows version is Windows 10 or higher (Windows 11 currently use MajorNumber "10" also)
+IF (($PSVersionTable.BuildVersion.Major) -eq "10") {
     IF (!($PSVersionTable.BuildVersion.Build) -ge "17763") {
+        Write-Error -Message "Your Windows version is not supported" -RecommendedAction "Please upgrade your Windows version to Windows 10, version 1809 or higher"
+        Pause
+        throw "Windows version not supported"
+    } elseif (!($PSVersionTable.BuildVersion.Major) -ge "11") {
         Write-Error -Message "Your Windows version is not supported" -RecommendedAction "Please upgrade your Windows version to Windows 10, version 1809 or higher"
         Pause
         throw "Windows version not supported"
@@ -10,6 +14,13 @@ IF (($PSVersionTable.BuildVersion.Major) -ge "10") {
     Write-Error -Message "Your Windows version is not supported" -RecommendedAction "Please upgrade your Windows version to Windows 10, version 1809 or higher"
     Pause
     throw "Windows version not supported"
+}
+
+# Addressing Microsoft Defender Antivirus blocking NtObjectManager (https://github.com/SoftwareRat/winget_install_script/issues/1)
+## Checking is Microsoft Defender Antivirus is enabled
+IF ((Get-MpComputerStatus).AntivirusEnabled) {
+    # Microsoft Defender Antivirus is enabled, temporary whitelisting PowerShell process
+    Add-MpPreference -ExclusionProcess ([System.Diagnostics.Process]::GetCurrentProcess().ProcessName)
 }
 
 # Install NtObjectManager module
@@ -34,3 +45,9 @@ Add-AppxPackage -Path $ENV:TEMP\Microsoft.DesktopAppInstaller_8wekyb3d8bbwe.msix
 $installationPath = (Get-AppxPackage Microsoft.DesktopAppInstaller).InstallLocation
 Set-ExecutionAlias -Path "C:\Windows\System32\winget.exe" -PackageName "Microsoft.DesktopAppInstaller_8wekyb3d8bbwe" -EntryPoint "Microsoft.DesktopAppInstaller_8wekyb3d8bbwe!winget" -Target "$installationPath\AppInstallerCLI.exe" -AppType Desktop -Version 3
 explorer.exe "shell:appsFolder\Microsoft.DesktopAppInstaller_8wekyb3d8bbwe!winget"
+
+## Checking is Microsoft Defender Antivirus is enabled
+IF ((Get-MpComputerStatus).AntivirusEnabled) {
+    # Microsoft Defender Antivirus is enabled, removing temporary whitelisted PowerShell process
+    Remove-MpPreference -ExclusionProcess ([System.Diagnostics.Process]::GetCurrentProcess().ProcessName)
+}

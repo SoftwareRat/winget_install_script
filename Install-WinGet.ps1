@@ -1,3 +1,17 @@
+# Checking if the Windows version is compatible with WinGet
+## Checking if Windows version is Windows 10 or higher (Windows 11 use MajorNumber "10" also)
+IF (($PSVersionTable.BuildVersion.Major) -ge "10") {
+    IF (!($PSVersionTable.BuildVersion.Build) -ge "17763") {
+        Write-Error -Message "Your Windows version is not supported" -RecommendedAction "Please upgrade your Windows version to Windows 10, version 1809 or higher"
+        Pause
+        throw "Windows version not supported"
+    }
+} else {
+    Write-Error -Message "Your Windows version is not supported" -RecommendedAction "Please upgrade your Windows version to Windows 10, version 1809 or higher"
+    Pause
+    throw "Windows version not supported"
+}
+
 # Install NtObjectManager module
 Install-Module NtObjectManager -Force
 

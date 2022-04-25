@@ -21,14 +21,14 @@ $vclibsuwp = Invoke-WebRequest -Uri "https://store.rg-adguard.net/api/GetFiles" 
 $winget = ((Invoke-RestMethod "https://api.github.com/repos/microsoft/winget-cli/releases/latest").assets.browser_download_url) -like "*.msixbundle"
 
 # Downloading packages
-Invoke-WebRequest $vclibsuwp -OutFile Microsoft.VCLibs.140.00.UWPDesktop_8wekyb3d8bbwe.appx
-Invoke-WebRequest $vclibs -OutFile Microsoft.VCLibs.140.00_8wekyb3d8bbwe.appx
-Invoke-WebRequest $winget -OutFile Microsoft.DesktopAppInstaller_8wekyb3d8bbwe.msixbundle
+Invoke-WebRequest $vclibsuwp -OutFile $ENV:TEMP\Microsoft.VCLibs.140.00.UWPDesktop_8wekyb3d8bbwe.appx
+Invoke-WebRequest $vclibs -OutFile $ENV:TEMP\Microsoft.VCLibs.140.00_8wekyb3d8bbwe.appx
+Invoke-WebRequest $winget -OutFile $ENV:TEMP\Microsoft.DesktopAppInstaller_8wekyb3d8bbwe.msixbundle
 
 # Installing packages
-Add-AppxPackage -Path .\Microsoft.VCLibs.140.00.UWPDesktop_8wekyb3d8bbwe.appx
-Add-AppxPackage -Path .\Microsoft.VCLibs.140.00_8wekyb3d8bbwe.appx
-Add-AppxPackage -Path .\Microsoft.DesktopAppInstaller_8wekyb3d8bbwe.msixbundle
+Add-AppxPackage -Path $ENV:TEMP\Microsoft.VCLibs.140.00.UWPDesktop_8wekyb3d8bbwe.appx
+Add-AppxPackage -Path $ENV:TEMP\Microsoft.VCLibs.140.00_8wekyb3d8bbwe.appx
+Add-AppxPackage -Path $ENV:TEMP\Microsoft.DesktopAppInstaller_8wekyb3d8bbwe.msixbundle
 
 # Create reparse point 
 $installationPath = (Get-AppxPackage Microsoft.DesktopAppInstaller).InstallLocation

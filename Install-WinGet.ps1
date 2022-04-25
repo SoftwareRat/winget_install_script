@@ -23,7 +23,7 @@ $winget = ((Invoke-RestMethod "https://api.github.com/repos/microsoft/winget-cli
 # Downloading packages
 Invoke-WebRequest $vclibsuwp -OutFile Microsoft.VCLibs.140.00.UWPDesktop_8wekyb3d8bbwe.appx
 Invoke-WebRequest $vclibs -OutFile Microsoft.VCLibs.140.00_8wekyb3d8bbwe.appx
-Invoke-WebRequest $winget -OutFile Microsoft.VCLibs.140.00_8wekyb3d8bbwe.appx
+Invoke-WebRequest $winget -OutFile Microsoft.DesktopAppInstaller_8wekyb3d8bbwe.msixbundle
 
 # Installing packages
 Add-AppxPackage -Path .\Microsoft.VCLibs.140.00.UWPDesktop_8wekyb3d8bbwe.appx

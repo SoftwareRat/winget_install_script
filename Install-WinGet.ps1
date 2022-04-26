@@ -63,8 +63,9 @@ Set-ExecutionPolicy -Scope Process -ExecutionPolicy Bypass -Force
 Import-Module -Name NtObjectManager
 $installationPath = (Get-AppxPackage Microsoft.DesktopAppInstaller).InstallLocation
 Set-ExecutionAlias -Path "C:\Windows\System32\winget.exe" -PackageName "Microsoft.DesktopAppInstaller_8wekyb3d8bbwe" -EntryPoint "Microsoft.DesktopAppInstaller_8wekyb3d8bbwe!winget" -Target "$installationPath\winget.exe" -AppType Desktop -Version 3
-Stop-Process -Name explorer*
 explorer.exe "shell:appsFolder\Microsoft.DesktopAppInstaller_8wekyb3d8bbwe!winget"
+Start-Sleep -Seconds 2
+Stop-Process -Name explorer*
 
 # Removing downloaded package installers
 Remove-Item -Path $ENV:TEMP\*.appx, $ENV:TEMP\*.msixbundle

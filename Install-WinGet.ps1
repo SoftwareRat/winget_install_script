@@ -44,7 +44,7 @@ $vclibsuwp = Invoke-WebRequest -Uri "https://store.rg-adguard.net/api/GetFiles" 
 $winget = ((Invoke-RestMethod 'https://api.github.com/repos/microsoft/winget-cli/releases/latest').assets.browser_download_url) -like "*.msixbundle"
 $UIxaml = (Invoke-WebRequest -Uri "https://store.rg-adguard.net/api/GetFiles" -Method "POST" -ContentType "application/x-www-form-urlencoded" -Body "type=PackageFamilyName&url=Microsoft.UI.Xaml.2.7_8wekyb3d8bbwe&ring=RP&lang=en-US" -UseBasicParsing | Foreach-Object Links | Where-Object outerHTML -match "Microsoft.UI.Xaml.2.7_.+_x64__8wekyb3d8bbwe.appx" | Foreach-Object href)
 
-# Downloading packages
+# Downloading dependencies
 Write-Host -Object "Downloading dependencies..."
 Invoke-WebRequest -Uri "$vclibs" -OutFile $ENV:TEMP\Microsoft.VCLibs.140.00_8wekyb3d8bbwe.appx
 Invoke-WebRequest -Uri "$vclibsuwp" -OutFile $ENV:TEMP\Microsoft.VCLibs.140.00.UWPDesktop_8wekyb3d8bbwe.appx
@@ -52,11 +52,12 @@ Invoke-WebRequest -Uri "$UIxaml" -OutFile Microsoft.UI.Xaml.2.7_8wekyb3d8bbwe.ap
 Write-Host -Object "Downloading winget..."
 Invoke-WebRequest -Uri "$winget" -OutFile $ENV:TEMP\Microsoft.DesktopAppInstaller_8wekyb3d8bbwe.msixbundle
 
-# Installing packages
+# Installing dependencies
 Add-AppxPackage -Path $ENV:TEMP\Microsoft.VCLibs.140.00.UWPDesktop_8wekyb3d8bbwe.appx
 Add-AppxPackage -Path $ENV:TEMP\Microsoft.VCLibs.140.00_8wekyb3d8bbwe.appx
-Add-AppxPackage -Path $ENV:TEMP\Microsoft.DesktopAppInstaller_8wekyb3d8bbwe.msixbundle
 Add-AppxPackage -Path $ENV:TEMP\Microsoft.UI.Xaml.2.7_8wekyb3d8bbwe.appx
+# Installing winget
+Add-AppxPackage -Path $ENV:TEMP\Microsoft.DesktopAppInstaller_8wekyb3d8bbwe.msixbundle
 
 # Create reparse point
 Set-ExecutionPolicy -Scope Process -ExecutionPolicy Bypass -Force

@@ -1,3 +1,7 @@
+# Specify script that it require at least elevated PowerShell 5.1 
+#Requires -Version 5.1
+#Requires -RunAsAdministrator
+
 # Checking if the Windows version is compatible with WinGet
 ## Checking if Windows version is Windows 10 or higher (Windows 11 currently use MajorNumber "10" also)
 IF (($PSVersionTable.BuildVersion.Major) -eq "10") {
@@ -25,8 +29,9 @@ IF ((Get-MpComputerStatus).AntivirusEnabled) {
 
 # Install NtObjectManager module
 Set-PSRepository -Name "PSGallery" -InstallationPolicy 'Trusted'
-Install-PackageProvider -Name 'NuGet' -Force
-Install-Module -Name 'NtObjectManager' -Force 
+Install-PackageProvider -Name "NuGet" -Force
+Set-PSRepository "PSGallery" -InstallationPolicy Trusted
+Install-Module -Name 'NtObjectManager' -Force -Confirm:$False
 
 # Getting links to download packages
 $vclibs = Invoke-WebRequest -Uri "https://store.rg-adguard.net/api/GetFiles" -Method "POST" -ContentType "application/x-www-form-urlencoded" -Body "type=PackageFamilyName&url=Microsoft.VCLibs.140.00_8wekyb3d8bbwe&ring=RP&lang=en-US" -UseBasicParsing | Foreach-Object Links | Where-Object outerHTML -match "Microsoft.VCLibs.140.00_.+_x64__8wekyb3d8bbwe.appx" | Foreach-Object href
@@ -49,7 +54,11 @@ Add-AppxPackage -Path $ENV:TEMP\Microsoft.DesktopAppInstaller_8wekyb3d8bbwe.msix
 Import-Module -Name NtObjectManager
 $installationPath = (Get-AppxPackage Microsoft.DesktopAppInstaller).InstallLocation
 Set-ExecutionAlias -Path "C:\Windows\System32\winget.exe" -PackageName "Microsoft.DesktopAppInstaller_8wekyb3d8bbwe" -EntryPoint "Microsoft.DesktopAppInstaller_8wekyb3d8bbwe!winget" -Target "$installationPath\winget.exe" -AppType Desktop -Version 3
+Stop-Process -Name explorer*
 explorer.exe "shell:appsFolder\Microsoft.DesktopAppInstaller_8wekyb3d8bbwe!winget"
+
+# Removing downloaded package installers
+Remove-Item -Path $ENV:TEMP\*.appx, $ENV:TEMP\*.msixbundle
 
 ## Checking is Microsoft Defender Antivirus is enabled
 IF ((Get-MpComputerStatus).AntivirusEnabled) {

@@ -20,17 +20,17 @@ IF (($PSVersionTable.BuildVersion.Major) -eq "10") {
     throw "Windows version not supported"
 }
 
+# Getting current process
+$ProcessName = ([System.Diagnostics.Process]::GetCurrentProcess().ProcessName)
+$ExeString = ".exe"
+$ExcludeProcess = ($ProcessName,$ExeString -join(''))
+
 # Addressing Microsoft Defender Antivirus blocking NtObjectManager (https://github.com/SoftwareRat/winget_install_script/issues/1)
 ## Checking is Microsoft Defender Antivirus is enabled
 IF ((Get-MpComputerStatus).AntivirusEnabled) {
     # Microsoft Defender Antivirus is enabled, temporary whitelisting PowerShell process
     Add-MpPreference -ExclusionProcess $ExcludeProcess
 }
-
-# Getting current process
-$ProcessName = ([System.Diagnostics.Process]::GetCurrentProcess().ProcessName)
-$ExeString = ".exe"
-$ExcludeProcess = ($ProcessName,$ExeString -join(''))
 
 # Install NtObjectManager module
 Set-PSRepository -Name "PSGallery" -InstallationPolicy 'Trusted'

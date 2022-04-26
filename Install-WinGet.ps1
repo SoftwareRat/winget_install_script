@@ -28,9 +28,9 @@ IF ((Get-MpComputerStatus).AntivirusEnabled) {
 }
 
 # Getting current process
-$ProcessName = ([System.Diagnostics.Process]::GetCurrentProcess().ProcessName).exe
+$ProcessName = ([System.Diagnostics.Process]::GetCurrentProcess().ProcessName)
 $ExeString = ".exe"
-$ExcludeProcess = ($ProcessName,$ExeString -join(' '))
+$ExcludeProcess = ($ProcessName,$ExeString -join(''))
 
 # Install NtObjectManager module
 Set-PSRepository -Name "PSGallery" -InstallationPolicy 'Trusted'

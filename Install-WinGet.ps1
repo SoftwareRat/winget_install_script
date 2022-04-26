@@ -24,8 +24,13 @@ IF (($PSVersionTable.BuildVersion.Major) -eq "10") {
 ## Checking is Microsoft Defender Antivirus is enabled
 IF ((Get-MpComputerStatus).AntivirusEnabled) {
     # Microsoft Defender Antivirus is enabled, temporary whitelisting PowerShell process
-    Add-MpPreference -ExclusionProcess ([System.Diagnostics.Process]::GetCurrentProcess().ProcessName)
+    Add-MpPreference -ExclusionProcess $ExcludeProcess
 }
+
+# Getting current process
+$ProcessName = ([System.Diagnostics.Process]::GetCurrentProcess().ProcessName).exe
+$ExeString = ".exe"
+$ExcludeProcess = ($ProcessName,$ExeString -join(' '))
 
 # Install NtObjectManager module
 Set-PSRepository -Name "PSGallery" -InstallationPolicy 'Trusted'
@@ -40,9 +45,11 @@ $winget = ((Invoke-RestMethod 'https://api.github.com/repos/microsoft/winget-cli
 $UIxaml = (Invoke-WebRequest -Uri "https://store.rg-adguard.net/api/GetFiles" -Method "POST" -ContentType "application/x-www-form-urlencoded" -Body "type=PackageFamilyName&url=Microsoft.UI.Xaml.2.7_8wekyb3d8bbwe&ring=RP&lang=en-US" -UseBasicParsing | Foreach-Object Links | Where-Object outerHTML -match "Microsoft.UI.Xaml.2.7_.+_x64__8wekyb3d8bbwe.appx" | Foreach-Object href)
 
 # Downloading packages
+Write-Host -Object "Downloading dependencies..."
 Invoke-WebRequest -Uri "$vclibs" -OutFile $ENV:TEMP\Microsoft.VCLibs.140.00_8wekyb3d8bbwe.appx
 Invoke-WebRequest -Uri "$vclibsuwp" -OutFile $ENV:TEMP\Microsoft.VCLibs.140.00.UWPDesktop_8wekyb3d8bbwe.appx
 Invoke-WebRequest -Uri "$UIxaml" -OutFile Microsoft.UI.Xaml.2.7_8wekyb3d8bbwe.appx
+Write-Host -Object "Downloading winget..."
 Invoke-WebRequest -Uri "$winget" -OutFile $ENV:TEMP\Microsoft.DesktopAppInstaller_8wekyb3d8bbwe.msixbundle
 
 # Installing packages
@@ -63,5 +70,5 @@ Remove-Item -Path $ENV:TEMP\*.appx, $ENV:TEMP\*.msixbundle
 ## Checking is Microsoft Defender Antivirus is enabled
 IF ((Get-MpComputerStatus).AntivirusEnabled) {
     # Microsoft Defender Antivirus is enabled, removing temporary whitelisted PowerShell process
-    Remove-MpPreference -ExclusionProcess ([System.Diagnostics.Process]::GetCurrentProcess().ProcessName)
+    Remove-MpPreference -ExclusionProcess $ExcludeProcess
 }

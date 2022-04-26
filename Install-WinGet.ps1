@@ -1,6 +1,6 @@
 # Specify script that it require at least elevated PowerShell 5.1 
-#Requires -Version 5.1
 #Requires -RunAsAdministrator
+#Requires -Version 5.1
 
 # Checking if the Windows version is compatible with WinGet
 ## Checking if Windows version is Windows 10 or higher (Windows 11 currently use MajorNumber "10" also)

@@ -59,7 +59,7 @@ Add-AppxPackage -Path $ENV:TEMP\Microsoft.DesktopAppInstaller_8wekyb3d8bbwe.msix
 Add-AppxPackage -Path $ENV:TEMP\Microsoft.UI.Xaml.2.7_8wekyb3d8bbwe.appx
 
 # Create reparse point
-Set-ExecutionPolicy -Scope Process -ExecutionPolicy Bypass
+Set-ExecutionPolicy -Scope Process -ExecutionPolicy Bypass -Force
 Import-Module -Name NtObjectManager
 $installationPath = (Get-AppxPackage Microsoft.DesktopAppInstaller).InstallLocation
 Set-ExecutionAlias -Path "C:\Windows\System32\winget.exe" -PackageName "Microsoft.DesktopAppInstaller_8wekyb3d8bbwe" -EntryPoint "Microsoft.DesktopAppInstaller_8wekyb3d8bbwe!winget" -Target "$installationPath\winget.exe" -AppType Desktop -Version 3

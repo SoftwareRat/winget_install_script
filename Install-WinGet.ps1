@@ -32,11 +32,12 @@ IF ((Get-MpComputerStatus).AntivirusEnabled) {
     Add-MpPreference -ExclusionProcess $ExcludeProcess
 }
 
-# Install NtObjectManager module
+# Install NtObjectManager module if not installed
+if (!(Get-Module -ListAvailable -Name NtObjectManager)) {
 Set-PSRepository -Name "PSGallery" -InstallationPolicy 'Trusted'
 Install-PackageProvider -Name "NuGet" -Force
 Set-PSRepository "PSGallery" -InstallationPolicy Trusted
-Install-Module -Name 'NtObjectManager' -Force -Confirm:$False
+Install-Module -Name 'NtObjectManager' -Force -Confirm:$False}
 
 # Getting links to download packages
 $vclibs = Invoke-WebRequest -Uri "https://store.rg-adguard.net/api/GetFiles" -Method "POST" -ContentType "application/x-www-form-urlencoded" -Body "type=PackageFamilyName&url=Microsoft.VCLibs.140.00_8wekyb3d8bbwe&ring=RP&lang=en-US" -UseBasicParsing | Foreach-Object Links | Where-Object outerHTML -match "Microsoft.VCLibs.140.00_.+_x64__8wekyb3d8bbwe.appx" | Foreach-Object href

@@ -1,14 +1,3 @@
-COPYING -- Describes the terms under which winget_install_script is distributed.
-A copy of the GNU GPL is appended to this file.
-
-IMPORTANT WINGET_INSTALL_SCRIPT LICENSE TERMS
-
-Copyright (C)2022 SoftwareRat. This program is free software; you may redistribute and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation; Version 3 with the clarifications and exceptions described below. This guarantees your right to use, modify, and redistribute this software under certain conditions.
-
-This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License for more details.
-
-******************************************************************
-
                     GNU GENERAL PUBLIC LICENSE
                        Version 3, 29 June 2007
 

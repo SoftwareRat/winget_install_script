@@ -47,11 +47,11 @@ $UIxaml = (Invoke-WebRequest -Uri "https://store.rg-adguard.net/api/GetFiles" -M
 
 # Downloading dependencies
 Write-Host -Object "Downloading dependencies..."
-Invoke-WebRequest -Uri "$vclibs" -OutFile $ENV:TEMP\Microsoft.VCLibs.140.00_8wekyb3d8bbwe.appx
-Invoke-WebRequest -Uri "$vclibsuwp" -OutFile $ENV:TEMP\Microsoft.VCLibs.140.00.UWPDesktop_8wekyb3d8bbwe.appx
-Invoke-WebRequest -Uri "$UIxaml" -OutFile $ENV:TEMP\Microsoft.UI.Xaml.2.7_8wekyb3d8bbwe.appx
+Start-BitsTransfer -Source "$vclibs" -Destination $ENV:TEMP\Microsoft.VCLibs.140.00_8wekyb3d8bbwe.appx
+Start-BitsTransfer -Source "$vclibsuwp" -Destination $ENV:TEMP\Microsoft.VCLibs.140.00.UWPDesktop_8wekyb3d8bbwe.appx
+Start-BitsTransfer -Source "$UIxaml" -Destination $ENV:TEMP\Microsoft.UI.Xaml.2.7_8wekyb3d8bbwe.appx
 Write-Host -Object "Downloading winget..."
-Invoke-WebRequest -Uri "$winget" -OutFile $ENV:TEMP\Microsoft.DesktopAppInstaller_8wekyb3d8bbwe.msixbundle
+Start-BitsTransfer -Source "$winget" -Destination $ENV:TEMP\Microsoft.DesktopAppInstaller_8wekyb3d8bbwe.msixbundle
 
 # Installing dependencies
 Add-AppxPackage -Path $ENV:TEMP\Microsoft.VCLibs.140.00.UWPDesktop_8wekyb3d8bbwe.appx

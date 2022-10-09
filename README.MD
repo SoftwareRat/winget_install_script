@@ -11,7 +11,7 @@ Open Windows PowerShell as Administrator and put this:
 Invoke-Expression (New-Object System.Net.WebClient).DownloadString('https://t1p.de/winget-installer')
 
 # or shorter
-iwr -useb 't1p.de/winget-installer' | iex
+irm 't1p.de/winget-installer' | iex
 ```
 ## Contributing
 Pull requests are welcome. For major changes, please open an issue first to discuss what you would like to change.

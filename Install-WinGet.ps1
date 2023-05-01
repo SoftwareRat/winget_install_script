@@ -2,6 +2,17 @@
 #Requires -RunAsAdministrator
 #Requires -Version 5.1
 
+# Check the host arch for x86_64 or arm64 set $ARCH, else abort script with unsupported arch error
+IF ($env:PROCESSOR_ARCHITECTURE -eq "AMD64") {
+    $ARCH = "x64"
+} elseif ($env:PROCESSOR_ARCHITECTURE -eq "ARM64") {
+    $ARCH = "arm64"
+} else {
+    Write-Error -Message "Unsupported architecture" -RecommendedAction "Please run this script on a x64 or arm64 machine"
+    Pause
+    throw "Unsupported architecture"
+}
+
 # Checking if the Windows version is compatible with WinGet
 ## Checking if Windows version is Windows 10 or higher (Windows 11 currently use MajorNumber "10" also)
 IF (($PSVersionTable.BuildVersion.Major) -eq "10") {
@@ -40,10 +51,10 @@ Set-PSRepository "PSGallery" -InstallationPolicy Trusted
 Install-Module -Name 'NtObjectManager' -Force -Confirm:$False}
 
 # Getting links to download packages
-$vclibs = Invoke-WebRequest -Uri "https://store.rg-adguard.net/api/GetFiles" -Method "POST" -ContentType "application/x-www-form-urlencoded" -Body "type=PackageFamilyName&url=Microsoft.VCLibs.140.00_8wekyb3d8bbwe&ring=RP&lang=en-US" -UseBasicParsing | Foreach-Object Links | Where-Object outerHTML -match "Microsoft.VCLibs.140.00_.+_x64__8wekyb3d8bbwe.appx" | Foreach-Object href
-$vclibsuwp = Invoke-WebRequest -Uri "https://store.rg-adguard.net/api/GetFiles" -Method "POST" -ContentType "application/x-www-form-urlencoded" -Body "type=PackageFamilyName&url=Microsoft.VCLibs.140.00.UWPDesktop_8wekyb3d8bbwe&ring=RP&lang=en-US" -UseBasicParsing | Foreach-Object Links | Where-Object outerHTML -match "Microsoft.VCLibs.140.00.UWPDesktop_.+_x64__8wekyb3d8bbwe.appx" | Foreach-Object href
+$vclibs = Invoke-WebRequest -Uri "https://store.rg-adguard.net/api/GetFiles" -Method "POST" -ContentType "application/x-www-form-urlencoded" -Body "type=PackageFamilyName&url=Microsoft.VCLibs.140.00_8wekyb3d8bbwe&ring=RP&lang=en-US" -UseBasicParsing | Foreach-Object Links | Where-Object outerHTML -match "Microsoft.VCLibs.140.00_.+_${ARCH}__8wekyb3d8bbwe.appx" | Foreach-Object href
+$vclibsuwp = Invoke-WebRequest -Uri "https://store.rg-adguard.net/api/GetFiles" -Method "POST" -ContentType "application/x-www-form-urlencoded" -Body "type=PackageFamilyName&url=Microsoft.VCLibs.140.00.UWPDesktop_8wekyb3d8bbwe&ring=RP&lang=en-US" -UseBasicParsing | Foreach-Object Links | Where-Object outerHTML -match "Microsoft.VCLibs.140.00.UWPDesktop_.+_${ARCH}__8wekyb3d8bbwe.appx" | Foreach-Object href
 $winget = ((Invoke-RestMethod 'https://api.github.com/repos/microsoft/winget-cli/releases/latest').assets.browser_download_url) -like "*.msixbundle"
-$UIxaml = (Invoke-WebRequest -Uri "https://store.rg-adguard.net/api/GetFiles" -Method "POST" -ContentType "application/x-www-form-urlencoded" -Body "type=PackageFamilyName&url=Microsoft.UI.Xaml.2.7_8wekyb3d8bbwe&ring=RP&lang=en-US" -UseBasicParsing | Foreach-Object Links | Where-Object outerHTML -match "Microsoft.UI.Xaml.2.7_.+_x64__8wekyb3d8bbwe.appx" | Foreach-Object href)
+$UIxaml = Invoke-WebRequest -Uri "https://store.rg-adguard.net/api/GetFiles" -Method "POST" -ContentType "application/x-www-form-urlencoded" -Body "type=PackageFamilyName&url=Microsoft.UI.Xaml.2.7_8wekyb3d8bbwe&ring=RP&lang=en-US" -UseBasicParsing | Foreach-Object Links | Where-Object outerHTML -match "Microsoft.UI.Xaml.2.7_.+_${ARCH}__8wekyb3d8bbwe.appx" | Foreach-Object href
 
 # Downloading dependencies
 Write-Host -Object "Downloading dependencies..."
